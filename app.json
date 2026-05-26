@@ -1,25 +1,53 @@
 {
   "expo": {
-    "name": "regenera-ranch",
+    "name": "Regenera Ranch",
     "slug": "regenera-ranch",
-    "version": "1.0.0",
+    "scheme": "regeneraranch",
+    "version": "0.1.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
+    "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.regeneraranch.app",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Regenera Ranch usa tu ubicación para detectar en qué potrero te encontrás.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "Regenera Ranch usa tu ubicación para detectar en qué potrero te encontrás, incluso en segundo plano.",
+        "NSPhotoLibraryUsageDescription": "Para adjuntar fotos a observaciones de potreros.",
+        "NSCameraUsageDescription": "Para tomar fotos de muestras de suelo, malezas o eventos del campo."
+      }
     },
     "android": {
+      "package": "com.regeneraranch.app",
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/android-icon-foreground.png",
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "permissions": [
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION",
+        "READ_EXTERNAL_STORAGE",
+        "CAMERA"
+      ]
     },
     "web": {
-      "favicon": "./assets/favicon.png"
-    }
+      "favicon": "./assets/favicon.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Permitir que Regenera Ranch use tu ubicación para detectar potreros."
+        }
+      ],
+      "expo-sqlite",
+      "expo-document-picker"
+    ]
   }
 }

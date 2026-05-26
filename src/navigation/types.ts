@@ -1,0 +1,17 @@
+export type RootStackParamList = {
+  Map: undefined;
+  PaddockDetail: { potreroId: string };
+  NewGrazing: { potreroId?: string } | undefined;
+  Herds: undefined;
+  Records: undefined;
+  Climate: undefined;
+  Settings: undefined;
+};
+
+declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace ReactNavigation {
+    // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+    interface RootParamList extends RootStackParamList {}
+  }
+}
