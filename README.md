@@ -1,7 +1,7 @@
 # Regenera-Ranch
-Claro, aquí va una versión organizada y clara para que cualquier persona —técnica o no— pueda entender el proyecto:
 
-PastorApp – Aplicación Móvil para Gestión de Pastoreo Regenerativo
+Regenera-Ranch – Aplicación Móvil para Gestión de Pastoreo Regenerativo
+
 ¿Qué es?
 Una aplicación móvil (iOS y Android) diseñada para agricultores y ganaderos que practican pastoreo regenerativo o manejo holístico, inspirada en la metodología del Savory Institute. Su objetivo es facilitar el seguimiento del pastoreo en el campo, recolectar datos útiles de forma automatizada y manual, y apoyar la toma de decisiones para mejorar la productividad y la salud del suelo a lo largo del tiempo.
 
