@@ -66,7 +66,7 @@ export default function PaddockMap({ potreros, onSelect }: Props) {
               click: () => onSelect?.(p),
             }}
           >
-            <Tooltip permanent direction="center" className="!bg-white/90 !border-0 !shadow-sm !text-xs !font-semibold">
+            <Tooltip direction="center" className="!bg-white/90 !border-0 !shadow-sm !text-xs !font-semibold">
               {p.name}
             </Tooltip>
           </Polygon>

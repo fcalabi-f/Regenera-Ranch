@@ -11,7 +11,9 @@ export async function signOutAction() {
   redirect('/login');
 }
 
-export async function createCampoAction(formData: FormData) {
+export async function createCampoAction(
+  formData: FormData,
+): Promise<{ id?: string; error?: string }> {
   const name = String(formData.get('name') ?? '').trim();
   if (!name) return { error: 'El nombre es obligatorio.' };
   const supabase = await getSupabaseServerClient();
@@ -20,13 +22,14 @@ export async function createCampoAction(formData: FormData) {
   } = await supabase.auth.getUser();
   if (!user) return { error: 'Sin sesión.' };
 
-  const { error } = await supabase.from('campos').insert({
-    name,
-    owner_user_id: user.id,
-  });
+  const { data, error } = await supabase
+    .from('campos')
+    .insert({ name, owner_user_id: user.id })
+    .select('id')
+    .single();
   if (error) return { error: error.message };
   revalidatePath('/');
-  return { ok: true };
+  return { id: data.id };
 }
 
 export async function bulkInsertPotrerosAction(
@@ -44,4 +47,28 @@ export async function bulkInsertPotrerosAction(
   if (error) return { inserted: 0, error: error.message };
   revalidatePath('/');
   return { inserted: data?.length ?? 0 };
+}
+
+export async function deletePotreroAction(
+  id: string,
+): Promise<{ ok?: true; error?: string }> {
+  const supabase = await getSupabaseServerClient();
+  // RLS garantiza que solo borra si el potrero pertenece a un campo del usuario.
+  const { error } = await supabase.from('potreros').delete().eq('id', id);
+  if (error) return { error: error.message };
+  revalidatePath('/');
+  return { ok: true };
+}
+
+export async function deleteAllPotrerosAction(
+  campoId: string,
+): Promise<{ deleted: number; error?: string }> {
+  const supabase = await getSupabaseServerClient();
+  const { error, count } = await supabase
+    .from('potreros')
+    .delete({ count: 'exact' })
+    .eq('campo_id', campoId);
+  if (error) return { deleted: 0, error: error.message };
+  revalidatePath('/');
+  return { deleted: count ?? 0 };
 }

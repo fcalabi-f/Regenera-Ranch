@@ -14,7 +14,7 @@ export function Onboarding() {
       const fd = new FormData();
       fd.append('name', name);
       const res = await createCampoAction(fd);
-      if (res?.error) setError(res.error);
+      if (res.error) setError(res.error);
     });
   };
 

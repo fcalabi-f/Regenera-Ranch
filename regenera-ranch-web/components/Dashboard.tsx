@@ -3,10 +3,16 @@
 import { useCallback, useState, useTransition } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
-import { Upload, LogOut, MapPin } from 'lucide-react';
+import { Upload, LogOut, MapPin, Trash2, Plus } from 'lucide-react';
+import { NewCampoModal } from './NewCampoModal';
 import { parseKmzBuffer, parseKmlString } from '@regenera/shared';
 import type { Campo, Potrero } from '@regenera/shared';
-import { signOutAction, bulkInsertPotrerosAction } from '@/app/actions';
+import {
+  signOutAction,
+  bulkInsertPotrerosAction,
+  deletePotreroAction,
+  deleteAllPotrerosAction,
+} from '@/app/actions';
 import { setActiveCampoCookie } from '@/lib/activeCampo';
 
 // Leaflet necesita window, así que cargamos el mapa solo del lado del cliente.
@@ -25,6 +31,7 @@ export function Dashboard({ user, campos, activeCampo, potreros }: Props) {
   const [status, setStatus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dragOver, setDragOver] = useState(false);
+  const [showNewCampo, setShowNewCampo] = useState(false);
 
   const handleFiles = useCallback(
     async (files: FileList | null) => {
@@ -80,6 +87,41 @@ export function Dashboard({ user, campos, activeCampo, potreros }: Props) {
     router.refresh();
   };
 
+  const deleteOne = (p: Potrero) => {
+    if (!confirm(`¿Borrar el potrero "${p.name}"? Esto también borra sus pastoreos.`)) {
+      return;
+    }
+    startTransition(async () => {
+      const res = await deletePotreroAction(p.id);
+      if (res.error) {
+        setError(res.error);
+      } else {
+        setStatus(`✓ Potrero "${p.name}" borrado.`);
+        router.refresh();
+      }
+    });
+  };
+
+  const deleteAll = () => {
+    if (
+      !confirm(
+        `¿Borrar TODOS los potreros del campo "${activeCampo.name}"? ` +
+          'Esto también borra sus pastoreos. No se puede deshacer.',
+      )
+    ) {
+      return;
+    }
+    startTransition(async () => {
+      const res = await deleteAllPotrerosAction(activeCampo.id);
+      if (res.error) {
+        setError(res.error);
+      } else {
+        setStatus(`✓ ${res.deleted} potreros borrados.`);
+        router.refresh();
+      }
+    });
+  };
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Topbar */}
@@ -100,6 +142,13 @@ export function Dashboard({ user, campos, activeCampo, potreros }: Props) {
                 </option>
               ))}
             </select>
+            <button
+              onClick={() => setShowNewCampo(true)}
+              className="rounded-md border border-stone-300 text-sm py-1 px-2 flex items-center gap-1 hover:bg-stone-50"
+              title="Crear un nuevo campo"
+            >
+              <Plus size={14} /> Nuevo campo
+            </button>
           </div>
           <div className="flex items-center gap-3 text-sm">
             <span className="text-stone-500">{user.email}</span>
@@ -156,9 +205,21 @@ export function Dashboard({ user, campos, activeCampo, potreros }: Props) {
           </section>
 
           <section>
-            <h2 className="text-sm font-semibold text-stone-700 mb-2 flex items-center gap-1">
-              <MapPin size={14} /> Potreros ({potreros.length})
-            </h2>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-sm font-semibold text-stone-700 flex items-center gap-1">
+                <MapPin size={14} /> Potreros ({potreros.length})
+              </h2>
+              {potreros.length > 0 && (
+                <button
+                  onClick={deleteAll}
+                  disabled={isPending}
+                  className="text-xs text-red-700 hover:text-red-900 hover:underline disabled:opacity-50"
+                  title="Borrar todos los potreros de este campo"
+                >
+                  Vaciar todos
+                </button>
+              )}
+            </div>
             {potreros.length === 0 ? (
               <p className="text-xs text-stone-500">
                 Sin potreros todavía. Subí un KMZ para empezar.
@@ -168,14 +229,22 @@ export function Dashboard({ user, campos, activeCampo, potreros }: Props) {
                 {potreros.map((p) => (
                   <li
                     key={p.id}
-                    className="rounded-md border border-stone-200 px-3 py-2 text-sm flex items-center justify-between"
+                    className="group rounded-md border border-stone-200 px-3 py-2 text-sm flex items-center justify-between gap-2"
                   >
-                    <span className="truncate">{p.name}</span>
+                    <span className="truncate flex-1">{p.name}</span>
                     {p.area_ha != null && (
-                      <span className="text-stone-500 text-xs ml-2 shrink-0">
+                      <span className="text-stone-500 text-xs shrink-0">
                         {p.area_ha.toFixed(1)} ha
                       </span>
                     )}
+                    <button
+                      onClick={() => deleteOne(p)}
+                      disabled={isPending}
+                      className="text-stone-400 hover:text-red-700 transition-colors shrink-0 disabled:opacity-50"
+                      title={`Borrar potrero "${p.name}"`}
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -195,6 +264,8 @@ export function Dashboard({ user, campos, activeCampo, potreros }: Props) {
           )}
         </main>
       </div>
+
+      {showNewCampo && <NewCampoModal onClose={() => setShowNewCampo(false)} />}
     </div>
   );
 }
