@@ -13,12 +13,12 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useCampo } from '../contexts/CampoContext';
 import { useAuth } from '../contexts/AuthContext';
 import * as Gps from '../services/gps';
-import { findContainingPotrero, boundsOfPotreros, polygonCentroid } from '../services/geo';
+import { findContainingPotrero, boundsOfPotreros, polygonCentroid } from '@regenera/shared';
 import { pickAndParseKmz } from '../services/kmz';
 import * as DB from '../lib/db';
 import { intensityColor, colors, radius, spacing } from '../theme';
-import { daysSinceLastGrazing } from '../services/analytics';
-import type { Potrero, Pastoreo } from '../types/models';
+import { daysSinceLastGrazing } from '@regenera/shared';
+import type { Potrero, Pastoreo } from '@regenera/shared';
 import type { RootStackParamList } from '../navigation/types';
 
 type Nav = NativeStackNavigationProp<RootStackParamList>;

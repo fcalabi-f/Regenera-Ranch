@@ -12,7 +12,7 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAuth } from './AuthContext';
 import * as DB from '../lib/db';
-import type { Campo, Potrero, Rebano } from '../types/models';
+import type { Campo, Potrero, Rebano } from '@regenera/shared';
 
 const ACTIVE_CAMPO_KEY = 'rr:activeCampoId';
 

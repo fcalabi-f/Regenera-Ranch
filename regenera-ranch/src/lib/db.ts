@@ -15,7 +15,7 @@ import type {
   ClimaEvento,
   SyncOp,
   GeoJSONPolygon,
-} from '../types/models';
+} from '@regenera/shared';
 
 const now = () => new Date().toISOString();
 export const uuid = () => Crypto.randomUUID();

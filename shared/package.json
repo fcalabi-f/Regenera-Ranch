@@ -1,0 +1,25 @@
+{
+  "name": "@regenera/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tipos y lógica pura compartida entre mobile (Expo) y web (Next.js).",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@e965/xlsx": "*",
+    "@tmcw/togeojson": "*",
+    "@turf/area": "*",
+    "@turf/boolean-point-in-polygon": "*",
+    "@turf/centroid": "*",
+    "@turf/helpers": "*",
+    "@xmldom/xmldom": "*",
+    "jszip": "*"
+  },
+  "devDependencies": {
+    "@types/geojson": "*",
+    "typescript": "*"
+  }
+}

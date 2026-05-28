@@ -16,9 +16,10 @@ import {
   agriculturalYearWindow,
   daysSinceLastGrazing,
   type SeasonComparison,
-} from '../services/analytics';
+  type Potrero,
+  type Pastoreo,
+} from '@regenera/shared';
 import { colors, intensityColor, radius, spacing } from '../theme';
-import type { Potrero, Pastoreo } from '../types/models';
 import { useCampo } from '../contexts/CampoContext';
 import type { RootStackParamList } from '../navigation/types';
 

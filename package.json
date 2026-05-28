@@ -1,46 +1,17 @@
 {
-  "name": "regenera-ranch",
-  "version": "1.0.0",
-  "main": "index.ts",
-  "dependencies": {
-    "@e965/xlsx": "^0.20.3",
-    "@react-native-async-storage/async-storage": "2.2.0",
-    "@react-native-community/netinfo": "12.0.1",
-    "@react-navigation/bottom-tabs": "^7.16.2",
-    "@react-navigation/native": "^7.2.5",
-    "@react-navigation/native-stack": "^7.16.0",
-    "@supabase/supabase-js": "^2.106.2",
-    "@tmcw/togeojson": "^7.1.2",
-    "@turf/area": "^7.3.5",
-    "@turf/boolean-point-in-polygon": "^7.3.5",
-    "@turf/centroid": "^7.3.5",
-    "@xmldom/xmldom": "^0.9.10",
-    "expo": "~56.0.5",
-    "expo-crypto": "~56.0.4",
-    "expo-document-picker": "~56.0.4",
-    "expo-file-system": "~56.0.7",
-    "expo-location": "~56.0.14",
-    "expo-sqlite": "~56.0.4",
-    "expo-status-bar": "~56.0.4",
-    "jszip": "^3.10.1",
-    "react": "19.2.3",
-    "react-native": "0.85.3",
-    "react-native-gesture-handler": "~2.31.1",
-    "react-native-maps": "1.27.2",
-    "react-native-safe-area-context": "~5.7.0",
-    "react-native-screens": "4.25.2",
-    "react-native-url-polyfill": "^3.0.0"
-  },
-  "devDependencies": {
-    "@types/geojson": "^7946.0.16",
-    "@types/react": "~19.2.2",
-    "typescript": "~6.0.3"
-  },
+  "name": "regenera-workspace",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Monorepo de Regenera Ranch: mobile (Expo), web (Next.js) y shared (tipos + lógica pura).",
+  "workspaces": [
+    "shared",
+    "regenera-ranch",
+    "regenera-ranch-web"
+  ],
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
-  },
-  "private": true
+    "mobile": "npm --workspace regenera-ranch run start",
+    "web": "npm --workspace regenera-ranch-web run dev",
+    "shared:build": "npm --workspace @regenera/shared run build",
+    "typecheck": "npm --workspaces --if-present run typecheck"
+  }
 }

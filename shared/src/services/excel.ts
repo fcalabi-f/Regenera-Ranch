@@ -1,14 +1,6 @@
-// Importación de planilla Excel formato Savory.
-//
-// El formato real del Savory Institute no está estandarizado entre versiones,
-// pero los datos centrales que esperamos son una grilla con columnas como:
-//   Potrero | Fecha entrada | Fecha salida | Días | Cabezas | Peso medio | Intensidad
-// Toleramos variaciones en nombres y orden de columnas (ver normalizeHeader).
-//
-// Si tu planilla usa nombres distintos, agregalos al diccionario HEADER_ALIASES.
+// Parseo puro de planilla Excel formato Savory → registros de pastoreo.
+// Sin IO: el caller pasa los bytes del archivo.
 
-import * as DocumentPicker from 'expo-document-picker';
-import * as FileSystem from 'expo-file-system';
 import * as XLSX from '@e965/xlsx';
 import type { Intensity } from '../types/models';
 
@@ -51,11 +43,7 @@ interface RawRow {
 }
 
 function normalizeHeader(h: string): keyof RawRow | null {
-  const k = h
-    .toString()
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, ' ');
+  const k = h.toString().trim().toLowerCase().replace(/\s+/g, ' ');
   return HEADER_ALIASES[k] ?? null;
 }
 
@@ -71,9 +59,8 @@ function parseIntensity(v: unknown): Intensity | undefined {
 function parseDate(v: unknown): string | undefined {
   if (v == null || v === '') return undefined;
   if (v instanceof Date) return v.toISOString().slice(0, 10);
-  // xlsx puede devolver números de fecha de Excel.
   if (typeof v === 'number') {
-    // Excel epoch: 1899-12-30
+    // Excel epoch (1899-12-30)
     const ms = Math.round((v - 25569) * 86400 * 1000);
     return new Date(ms).toISOString().slice(0, 10);
   }
@@ -96,31 +83,27 @@ export interface ParsedGrazing {
   notes?: string;
 }
 
-export interface ExcelImportResult {
+export interface ExcelParseResult {
   rows: ParsedGrazing[];
   skipped: number;
   unmappedHeaders: string[];
 }
 
-export async function pickAndParseExcel(): Promise<ExcelImportResult | null> {
-  const result = await DocumentPicker.getDocumentAsync({
-    type: [
-      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      'application/vnd.ms-excel',
-      '*/*',
-    ],
-    copyToCacheDirectory: true,
-    multiple: false,
-  });
-  if (result.canceled || !result.assets?.length) return null;
-
-  const asset = result.assets[0];
-  const b64 = await FileSystem.readAsStringAsync(asset.uri, {
-    encoding: FileSystem.EncodingType.Base64,
-  });
-  const wb = XLSX.read(b64, { type: 'base64', cellDates: true });
+/**
+ * Parsea un libro de Excel a registros de pastoreo. `input` puede ser:
+ *  - base64 string (typical en mobile vía expo-file-system)
+ *  - ArrayBuffer (típico en web)
+ *  - Uint8Array
+ */
+export function parseExcelBuffer(
+  input: string | ArrayBuffer | Uint8Array,
+  opts: { type?: 'base64' | 'array' | 'buffer' } = {},
+): ExcelParseResult {
+  const type =
+    opts.type ??
+    (typeof input === 'string' ? 'base64' : input instanceof ArrayBuffer ? 'array' : 'buffer');
+  const wb = XLSX.read(input as never, { type, cellDates: true });
   const firstSheet = wb.Sheets[wb.SheetNames[0]];
-  // header:1 => devuelve matriz de filas.
   const matrix = XLSX.utils.sheet_to_json<unknown[]>(firstSheet, {
     header: 1,
     defval: null,

@@ -11,7 +11,7 @@ import {
 import { useCampo } from '../contexts/CampoContext';
 import * as DB from '../lib/db';
 import { colors, radius, spacing } from '../theme';
-import type { ClimaEvento, GrowthSpeed, WeatherKind } from '../types/models';
+import type { ClimaEvento, GrowthSpeed, WeatherKind } from '@regenera/shared';
 
 const SPEEDS: GrowthSpeed[] = ['rapido', 'lento', 'estancado'];
 

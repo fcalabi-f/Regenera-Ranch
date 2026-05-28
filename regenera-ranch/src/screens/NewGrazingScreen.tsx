@@ -12,7 +12,7 @@ import { useNavigation, useRoute, type RouteProp } from '@react-navigation/nativ
 import * as DB from '../lib/db';
 import { useCampo } from '../contexts/CampoContext';
 import { colors, intensityColor, radius, spacing } from '../theme';
-import type { Intensity, Recommendation } from '../types/models';
+import type { Intensity, Recommendation } from '@regenera/shared';
 import type { RootStackParamList } from '../navigation/types';
 
 type Route = RouteProp<RootStackParamList, 'NewGrazing'>;

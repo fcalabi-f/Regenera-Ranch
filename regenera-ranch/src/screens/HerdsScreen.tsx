@@ -11,7 +11,7 @@ import {
 import { useCampo } from '../contexts/CampoContext';
 import * as DB from '../lib/db';
 import { colors, radius, spacing } from '../theme';
-import type { Rebano, MovementKind } from '../types/models';
+import type { Rebano, MovementKind } from '@regenera/shared';
 
 const MOVEMENT_OPTIONS: { value: MovementKind; label: string; sign: 1 | -1 }[] = [
   { value: 'nacimiento', label: 'Nacimiento', sign: 1 },
